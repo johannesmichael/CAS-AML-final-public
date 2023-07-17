@@ -22,7 +22,7 @@ START_TIME = default_timer()
 # Create a logger for successful operations
 success_logger = logging.getLogger('log/success')
 success_logger.setLevel(logging.INFO)
-success_handler = logging.FileHandler('log/uccess.log')
+success_handler = logging.FileHandler('log/success.log')
 success_handler.setLevel(logging.INFO)
 success_formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 success_handler.setFormatter(success_formatter)
@@ -241,7 +241,7 @@ class EmailMime:
 
 
 class AzureTable:
-    def __init__(self, connection_string=OUTLOOK_CONTENT_CONNECTION_STRING, table_name="outlookjohannes"):
+    def __init__(self, connection_string=OUTLOOK_CONTENT_CONNECTION_STRING, table_name="debugg"):
         self.table_name = table_name
         self.table_client = TableServiceClient.from_connection_string(connection_string).get_table_client(table_name)
         

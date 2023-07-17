@@ -240,7 +240,7 @@ if __name__ == "__main__":
     df = clean_data(df)
     print(df.shape)
     #for testing
-    df = df[:1000].copy()
+    #df = df[:3].copy()
     print(df.shape)
 
     # Multiprocessing speeds up the process but the API call limit seems to be a problem, lots of errors
