@@ -266,3 +266,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+#python 03_openai_ada_embeddings.py --file_name 2021-06-30_outlook_ada_embeddings_csX.parquet --collection_name openai_ada_1000cs --chunk_size 1000 --chunk_overlap 50
