@@ -1,0 +1,56 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "04_query",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": ["--collection_name", "openai_ada_1000cs", "--max_tokens", "1000"]
+        },
+        {
+            "name": "01_get_email",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--start_date",
+                "01-07-2022",
+                "--end_date",
+                "31-07-2022"
+            ]
+        },
+        {
+            "name": "03_openai",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--file_name",
+                "2021-06-30_outlook_ada_embeddings_cs1000.parquet",
+                "--collection_name",
+                "openai_ada_1000cs",
+                "--chunk_size",
+                "1000",
+                "--chunk_overlap",
+                "50"
+            ]
+        ]
+    }
