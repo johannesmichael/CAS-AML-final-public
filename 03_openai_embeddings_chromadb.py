@@ -233,7 +233,7 @@ def main():
             #print(f"Creating embeddings. May take some minutes...")
             #db.add_documents(texts)
         else:
-            collection = client.create_collection(name="openai_ada_1000cs", embedding_function=openai_ef)
+            collection = client.create_collection(name=collection_name, embedding_function=openai_ef)
             
     else:
         # Create and store locally vectorstore
@@ -243,7 +243,7 @@ def main():
                 model_name="text-embedding-ada-002"
             )
         client = chromadb.Client(CHROMA_SETTINGS)
-        collection = client.create_collection(name="openai_ada_1000cs", embedding_function=openai_ef)
+        collection = client.create_collection(name=collection_name, embedding_function=openai_ef)
 
     texts = process_data(df, chunk_size, chunk_overlap)
     print(f"Creating embeddings. May take some minutes...")
