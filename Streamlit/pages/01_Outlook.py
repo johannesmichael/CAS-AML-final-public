@@ -49,7 +49,7 @@ temperature = st.sidebar.slider('Temperature ("creativity of the model")', 0.0, 
 if model == "gpt-4" or model == "gpt-3.5-turbo":
     max_tokens = st.sidebar.slider('Max Tokens ("length of the answer")', 0, 3000, 3000, 500)
 if model == "gpt-3.5-turbo-16k":
-    max_tokens = st.sidebar.slider('Max Tokens ("length of the answer")', 0, 7000, 14000, 500)
+    max_tokens = st.sidebar.slider('Max Tokens ("length of the answer")', 0, 14000, 7000,  500)
 
 #add a slider for number of documents
 num_docs = st.sidebar.slider('Number of Documents ("number of documents to retrieve")', 0, 10, 3, 1)
