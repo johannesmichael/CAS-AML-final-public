@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "cas"
+version = "0.1.0"
+description = "environment for CAS project"
+authors = ["johannesmichael <jroempp@ambergloglay.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "~3.10"
+torch = "2.0.1"
+conda-lock = "^2.1.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
