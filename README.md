@@ -12,6 +12,24 @@ The project is the final project of the **CAS for Advanced Machine Learning 2022
 
 
 
+## Table of Content
+
+
+- [Goals](#goals)
+- [Features](#features)
+- [Next steps / To Do](#next-steps--to-do)
+- [Tech Stack](#tech-stack)
+- [Requirements](#requirements)
+- [Environment Variables](#environment-variables)
+- [Installation](#installation)
+- [Workflow](#workflow)
+- [Usage/Examples](#usageexamples)
+- [Demo](#demo)
+- [Lessons Learned](#lessons-learned)
+- [Acknowledgements](#acknowledgements)
+- [Author](#author)
+
+
 ## Goals
 
 - Create a real world application
@@ -102,6 +120,9 @@ For updating the environment add the conda packages to the environment.yml and u
 For adding packages from PyPi use
 
     poetry add <package_name==version>
+## Workflow
+
+Diagrams not done yet
 ## Usage/Examples
 
 The project has the following structure:
@@ -304,4 +325,13 @@ Newsletters, Books, Papers
 
  and extensive use of ChatGPT and Perplexity.ai
 
+
+
+## Author
+
+**Johannes Römpp**  
+CTO  
+ Head of Software Development and IoT  
+ at [AMBERG LOGLAY AG](https://ambergloglay.com/)  
+Contact: jroempp@ambergloglay.com
 
