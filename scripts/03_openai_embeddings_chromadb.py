@@ -1,14 +1,13 @@
-#first version where I tried to use langchain with ChromaDB
-#but because of dependency issues and lanhchain not keeping up with the latest version of chromaDB
-#I decided to use chromaDB directly
-
 
 import os
 import glob
+import uuid 
 from typing import List
+import argparse
 from dotenv import load_dotenv
 import openai
 from pandas import DataFrame, to_datetime, read_parquet
+import pyarrow
 from langchain.document_loaders import DataFrameLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import Chroma
@@ -19,6 +18,10 @@ import ast
 from io import BytesIO
 from datetime import date
 from tqdm import tqdm
+from chromadb.config import Settings
+from chromadb.utils import embedding_functions
+import chromadb
+from multiprocessing import Pool
 from scripts.constants import CHROMA_SETTINGS
 
 load_dotenv()
@@ -27,7 +30,8 @@ load_dotenv()
 OUTLOOK_CONTENT_CONNECTION_STRING = os.environ.get('OUTLOOK_CONTENT_CONNECTION_STRING')
 OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
 persist_directory = os.environ.get('PERSIST_DIRECTORY')
-chunk_size = 500
+#setting the chunk size plays a big role in the quality of the answers
+chunk_size = 1000
 chunk_overlap = 50
 
 tqdm.pandas()
@@ -84,7 +88,7 @@ def clean_data(file_name):
     df = df[df['finish_reason'] != 'length']
     print(f"DF of shape:  {str(df.shape)}")
 
-    #testing
+    # for testing
     #df = df[:10]
     
 
@@ -96,9 +100,10 @@ def clean_data(file_name):
     
     #create new column with text from list of dictionaries                                                                 
     df['text'] = df['content_processed_list'].apply(create_text)
+    df['display_text'] = df['text']
 
     #prepare for embedding by remmoving unnecessary columns
-    df_load = df[['subject', 'content','conversation_id', 'web_link',  'text']]
+    df_load = df[['subject', 'content','conversation_id', 'web_link', 'display_text', 'text']]
 
     return df_load
 
@@ -113,13 +118,36 @@ def get_embedding(content, model="text-embedding-ada-002"):
         return []
     
 
-def process_data(df):
+def process_data(df, chunk_size, chunk_overlap):
     loader = DataFrameLoader(df, page_content_column="text")
     documents = loader.load()
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap)
     texts = text_splitter.split_documents(documents)
     print(f"Split into {len(texts)} chunks of text (max. {chunk_size} tokens each)")
     return texts
+
+def request_embeddings(doc):
+    model="text-embedding-ada-002"
+    return openai.Embedding.create(input=doc.page_content, model=model)
+
+# Create embeddings
+def create_embeddings(texts):
+    
+    
+    # Using multiprocessing with 4 processes
+    with Pool(4) as p:
+        embeddings = list(tqdm(p.imap(request_embeddings, texts), total=len(texts), desc="Creating embeddings"))
+    # Extract metadata
+    metadatas = [doc.metadata for doc in texts]
+
+    # Create DataFrame
+    df_embeddings = DataFrame(metadatas)
+    df_embeddings['embedding'] = embeddings
+    #create id column
+    df_embeddings['uuid'] = [str(uuid.uuid4()) for _ in range(len(df_embeddings.index))]
+
+    return df_embeddings
+
 
 def does_vectorstore_exist(persist_directory: str) -> bool:
     """
@@ -135,63 +163,109 @@ def does_vectorstore_exist(persist_directory: str) -> bool:
     return False
 
 
+
+
 #function to upload data to azure blob storage
 def upload_data(df):
-    try:
-        #Save to Azure Blob Storage
-        # Create the BlobServiceClient object which will be used
-        blob_service_client = BlobServiceClient.from_connection_string(OUTLOOK_CONTENT_CONNECTION_STRING)
-
-        container_name = 'outlookcontent'
-        #get today's date
-        today = date.today().strftime('%Y-%m-%d')
-        # Create a blob client using the local file name as the name for the blob
-        file_name = today + "_outlook_ada_data.parquet"
-        blob_client = blob_service_client.get_blob_client(container=container_name, blob=file_name)
+    
+    #Save to Azure Blob Storage
+    # Create the BlobServiceClient object which will be used
+    blob_service_client = BlobServiceClient.from_connection_string(OUTLOOK_CONTENT_CONNECTION_STRING)
+    container_name = 'outlookcontent'
+    #get today's date
+    today = date.today().strftime('%Y-%m-%d')
+    # Create a blob client using the local file name as the name for the blob
+    file_name = today + "_outlook_ada_embeddings_cs" + str(chunk_size)
+    
         
-
+    try:
+        extension = '.parquet'
+        blob_client = blob_service_client.get_blob_client(container=container_name, blob=file_name+extension)
         parquet_file = BytesIO()
         df.to_parquet(parquet_file,  engine='pyarrow')
         parquet_file.seek(0)  # change the stream position back to the beginning after writing
 
-        response = blob_client.upload_blob(data=parquet_file, overwrite=True)
+        
 
         
     except:
-        print("error uploading data to blob storage")
+        print("Error uploading to blob storage")
 
     else:
-        return response
+        return blob_client.upload_blob(data=parquet_file, overwrite=True)
+    
+
+# create the top-level parser
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--file_name", help="file name to download from blob storage, parquet file")
+    parser.add_argument("--collection_name", help="Name of the collection to create/use")
+    parser.add_argument("--chunk_size", help="chunk_size", default=1000)
+    parser.add_argument("--chunk_overlap", help="chunk_overlap", default=50)
+    return parser.parse_args()
 
 def main():
-    df = clean_data("2023-07-08final_data.parquet")
-    #df = df[:10]
-    print(f"DF of shape:  {str(df.shape)}")
+    args = parse_args()
+    df = clean_data(args.file_name)
+    chunk_size = args.chunk_size
+    chunk_overlap = args.chunk_overlap
+    collection_name = args.collection_name
 
-    # Create embeddings
-    embeddings = OpenAIEmbeddings()
+    #for testing
+    #df = df[:100]
+
+    print(f"DF of shape:  {str(df.shape)}")
+    openai_ef = embedding_functions.OpenAIEmbeddingFunction(
+            api_key=OPENAI_API_KEY,
+            model_name="text-embedding-ada-002"
+        )
+    
 
     if does_vectorstore_exist(persist_directory):
         # Update and store locally vectorstore
         print(f"Appending to existing vectorstore at {persist_directory}")
-        db = Chroma(persist_directory=persist_directory, embedding_function=embeddings, client_settings=CHROMA_SETTINGS)
-        collection = db.get()
-        #TODO: adapt to dataframe
-        texts = process_data([metadata['source'] for metadata in collection['metadatas']])
-        print(f"Creating embeddings. May take some minutes...")
-        db.add_documents(texts)
+        client = chromadb.Client(CHROMA_SETTINGS)
+        collections = client.list_collections()
+        if "openai_ada_1000cs" in collections:
+            collection = client.get_collection(collection)
+            #TODO: adapt to dataframe
+            #texts = process_data([metadata['source'] for metadata in collection['metadatas']])
+            #print(f"Creating embeddings. May take some minutes...")
+            #db.add_documents(texts)
+        else:
+            collection = client.create_collection(name=collection_name, embedding_function=openai_ef)
+            
     else:
         # Create and store locally vectorstore
         print("Creating new vectorstore")
-        texts = process_data(df)
-        print(f"Creating embeddings. May take some minutes...")
-        db = Chroma.from_documents(texts, embeddings, persist_directory=persist_directory, client_settings=CHROMA_SETTINGS)
-    db.persist()
-    db = None
+        openai_ef = embedding_functions.OpenAIEmbeddingFunction(
+                api_key=OPENAI_API_KEY,
+                model_name="text-embedding-ada-002"
+            )
+        client = chromadb.Client(CHROMA_SETTINGS)
+        collection = client.create_collection(name=collection_name, embedding_function=openai_ef)
 
+    texts = process_data(df, chunk_size, chunk_overlap)
+    print(f"Creating embeddings. May take some minutes...")
+    df_embeddings = create_embeddings(texts)
+    upload_data(df_embeddings)
+    #function to add to collection
+    def add_to_collection(row):
+        collection.add(documents=row['content'],
+        embeddings=row['embedding']['data'][0]['embedding'],
+         metadatas=row[['subject', 'conversation_id', 'web_link', 'display_text']].to_dict(),
+        ids=[str(row['uuid'])])
+        return True 
+    
+    #add to collection
+    df_embeddings.progress_apply(add_to_collection, axis=1)
+        
     print(f"Ingestion complete! You can now run query.py to query your emails")    
 
 
 
 if __name__ == "__main__":
     main()
+
+
+#python 03_openai_ada_embeddings.py --file_name 2021-06-30_outlook_ada_embeddings_csX.parquet --collection_name openai_ada_1000cs --chunk_size 1000 --chunk_overlap 50
