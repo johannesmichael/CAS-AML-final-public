@@ -20,18 +20,18 @@ from timeit import default_timer
 START_TIME = default_timer()
 
 # Create a logger for successful operations
-success_logger = logging.getLogger('log/success')
+success_logger = logging.getLogger('../log/success')
 success_logger.setLevel(logging.INFO)
-success_handler = logging.FileHandler('log/success.log')
+success_handler = logging.FileHandler('../log/success.log')
 success_handler.setLevel(logging.INFO)
 success_formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 success_handler.setFormatter(success_formatter)
 success_logger.addHandler(success_handler)
 
 # Create a logger for failed operations
-failure_logger = logging.getLogger('log/failure')
+failure_logger = logging.getLogger('../log/failure')
 failure_logger.setLevel(logging.ERROR)
-failure_handler = logging.FileHandler('log/failure.log')
+failure_handler = logging.FileHandler('../log/failure.log')
 failure_handler.setLevel(logging.ERROR)
 failure_formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 failure_handler.setFormatter(failure_formatter)
@@ -307,4 +307,5 @@ def main():
 if __name__ == "__main__":
     main()
 
+#cd scripts
 #python 01_get_email_content.py --start_date "01-07-2022" --end_date "31-07-2022"
