@@ -114,8 +114,8 @@ def get_summary(value):
         max_tokens = count/2
     prompt = f"""Erstelle eine Zusammenfassung der folgenden Email-Unterhaltung in <>, inklusive der Personen, die daran beteiligt sind.
                 Beispiel:
-                Personen: Max Mustermann, Erika Mustermann
-                Zusammenfassung: In dieser Email-Unterhaltung geht es um..
+                Personen: 
+                Zusammenfassung: 
                 <{value}>
                  """
     
