@@ -3,6 +3,8 @@
 
 The project tries to solve a common problem: searching for emails by context instead of email adresses or keywords only. It also lets you summarize the content of an email conversation. And for reference and more detailed information it provides you with the web link (if used on Outlook 365).
 
+The implementation uses OpenAI API, Langchain framework and ChromaDB to create a Streamlit app to query emails. It uses OpenAI, because it is kind of the State of the Art in usability and results. This way it should be the benchmark for me when trying to use other models.
+
 The project is the final project of the **CAS for Advanced Machine Learning 2022** at the University of Bern, Switzerland.
 
 
@@ -267,3 +269,39 @@ I chose these, because the `falcon-7b` has a good performance and the `Guanaco 7
 
 First goal was to create a real world app that can be used. Second was the rising request in our organization to start looking into the emerging field of LLMs. My focus was more on Timeseries data before, since I develop business cases in the IoT sector. But the hype around ChatGPT also got me hooked because I see quite some potential for our organization and the speed of development in the last 6 months is amazing. It changed the way how I develop and code as well as my daily work: it is present all the time.  
 But this project proved again the importance of high quality data to achieve good results. All tutorials are based on existing datasets and as soon as you use your own, the problems appear. In the beginning I was looking at all the promising tools to use, but today I even know, that even popular frameworks like Langchain or LLamaIndex are not the silver bullet that solves all your problems. This is the biggest learning for me, since I am not the Data Scientist nor the developer, I have to decide which strategy to follow or which problem to solve with which tools or frameworks. Or where to get the information needed to decide. And even that I did most of the work after business hours or on weekends, it was fun and I learned a lot (and the feeling of being in the middle of a live/work changer is exiting). 
+## Acknowledgements
+
+Documentations:
+
+ - [Microsoft Outlook REST API](https://learn.microsoft.com/en-us/outlook/rest/get-started)
+ - [OpenAI API](https://platform.openai.com/docs/api-reference)
+ - [openai-cookbook](https://github.com/openai/openai-cookbook)
+ - [Langchain](https://python.langchain.com/docs/get_started/introduction.html)
+ - [Chroma](https://docs.trychroma.com/)
+ - [Streamlit](https://docs.streamlit.io/)
+ - [Redis](https://redis.com/solutions/use-cases/vector-database/)
+ - [LlamaIndex](https://gpt-index.readthedocs.io/en/latest/)
+ 
+
+ Repositories:  
+
+ - [PrivateGPT](https://github.com/imartinez/privateGPT)
+ - [OpenLLMs](https://github.com/eugeneyan/open-llms)
+ - [Redis Ventures](https://github.com/RedisVentures/redis-arXiv-search)
+ - [falcontune](https://github.com/rmihaylov/falcontune)
+ - [open-playground](https://github.com/nat/openplayground)
+
+Tutorials:  
+ - [Let's build GPT: from scratch, in code, spelled out](https://www.youtube.com/watch?v=kCc8FmEb1nY)
+ - [HuggingFace Tutorial on text summarization](https://huggingface.co/docs/transformers/tasks/summarization)
+
+Newsletters, Books, Papers
+ - [Machine Learning Q and AI](https://leanpub.com/machine-learning-q-and-ai)
+ - [Ahead of AI](https://magazine.sebastianraschka.com/)
+ - [TinyStories: How Small Can Language Models Be and Still Speak Coherent English?](https://arxiv.org/abs/2305.07759)
+ - [LLaMA-Adapter: Efficient Fine-tuning of Language Models with Zero-init Attention](https://arxiv.org/abs/2303.16199)
+
+
+ and extensive use of ChatGPT and Perplexity.ai
+
+
