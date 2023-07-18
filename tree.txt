@@ -1,0 +1,53 @@
+.
+├── Streamlit
+│   ├── assets
+│   │   └── AE logo only.png
+│   ├── pages
+│   │   └── 01_Outlook.py
+│   └── home.py
+├── archiv
+│   ├── 01_get_email_content_RAY.py
+│   ├── 01_get_email_content_multi.py
+│   ├── 02_prepare_email.py
+│   └── 03_openai_embeddings_langchain.py
+├── db
+│   ├── index
+│   │   ├── id_to_uuid_ea8c57b6-2143-439b-9882-472f050b6e95.pkl
+│   │   ├── id_to_uuid_f789b1fa-fe41-489f-b966-3cb495cb0c8d.pkl
+│   │   ├── index_ea8c57b6-2143-439b-9882-472f050b6e95.bin
+│   │   ├── index_f789b1fa-fe41-489f-b966-3cb495cb0c8d.bin
+│   │   ├── index_metadata_ea8c57b6-2143-439b-9882-472f050b6e95.pkl
+│   │   ├── index_metadata_f789b1fa-fe41-489f-b966-3cb495cb0c8d.pkl
+│   │   ├── uuid_to_id_ea8c57b6-2143-439b-9882-472f050b6e95.pkl
+│   │   └── uuid_to_id_f789b1fa-fe41-489f-b966-3cb495cb0c8d.pkl
+│   ├── chroma-collections.parquet
+│   └── chroma-embeddings.parquet
+├── notebooks
+│   ├── chroma.ipynb
+│   ├── embedding.ipynb
+│   ├── falcon_tesd.ipynb
+│   ├── get_emails.ipynb
+│   ├── ingest_notebook.ipynb
+│   ├── langchain_module.py
+│   ├── prepare_email_content copy.ipynb
+│   ├── prepare_email_content.ipynb
+│   ├── prepare_email_content_for_finetuning.ipynb
+│   └── queries.ipynb
+├── scripts
+│   ├── 01_get_email_content.py
+│   ├── 02_prepare_email_gpt.py
+│   ├── 03_openai_embeddings_chromadb.py
+│   ├── 04_query.py
+│   ├── 04a_query_multiretriver.py
+│   └── constants.py
+├── README.md
+├── conda-linux-64.lock
+├── conda-lock.yml
+├── environment.env
+├── environment.yml
+├── launch.json
+├── poetry.lock
+├── pyproject.toml
+└── tree.txt
+
+8 directories, 42 files

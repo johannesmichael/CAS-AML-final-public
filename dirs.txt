@@ -1,0 +1,11 @@
+.
+├── Streamlit
+│   ├── assets
+│   └── pages
+├── archiv
+├── db
+│   └── index
+├── notebooks
+└── scripts
+
+8 directories
