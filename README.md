@@ -233,8 +233,37 @@ Classifying it is not necessary for the inital purpose, but I thought, I could u
 Second challenge was the use of document and vectorstore. I tried it with Redis Cloud, to have a DB in the cloud and not only locally. But with the first approach I reached the free tier limit pretty soon, so I decided to start with local ChromaDB and try out Redis and other solutions later, when all points are clear.  
 Most challenging was the integration in to the code. Even with the extensive integrations provided by `langchain` library, it was not that trivial, since the development is on the fast lane. So I got errors with my dataset (it worked on the first small part, but later with the whole it failed). So I set up the ingestion and embedding process myself using the chromadb library directly.
 
-Finding the right parameters for the preprocessing and embeddings showed a big impact on the results in the query. 
+Finding the right parameters for the preprocessing and embeddings showed a big impact on the results in the query. My first approach wiht `chunk_size=500` did not give me satisfying results. For example it often returned one good result (meaning the context of the email matched the query), but also completly unrelated emails.  
+After that I tried it with 2000, which did not work either. The last approach of `chunk_size=1000` and `chunk_overlap = 50` showed very good resuls, returning the right emails by 90 %. (I have to admitt, that it depends on the prompt for the query as well. That is why one of the future work will be on implementing my own retriever).
+
+Side note: I did not experiment with different alghorithms for similarity search or different metrics or Retrievers. The vectorstore databases offer here different approaches as well the Langchain Retriever library. I used the `RetrievalQA`. with the `chain_type="stuff"`. See the Retriever Section in this Readme.
+
+Since data processing can take a long time, especialld when making calls to an API like the one from OpenAI, I experimented with different approaches, like multiprocessing, multithreading, asyncio, and distributed compute like Ray and Dask (with Modin for Pandas).
+But except for the embeddings, I could not use it. I ended up with an error rate of 25 % on `gpt-3.5`. Since the rate limit is pretty high, I am unsure why that happened. But did not have the time to dig deeper into it. My queries for roughly 3000 emails took more than 3 hours and cost me around 10 $.  
+This will be a topic for the next phase of development: using open source models and even finetun some. 
+
+The last step I did with the data, was to create a dataset for instruction finetuning. But here is eventually the next hurdle to take, since the sometimes long email conversations create large entries in the dataset, which might be a reason why I did not succeed with finetuning so far. But more on this later.
+
+Some time also went into finding the best way to query the models, so prompt engineering was a big part. My first try was to get the content stuctured as a `JSON` object. But when the finish reason of the API was `lenght`, the JSON was incomplete. And the model did make other faulty formatting once in a while. So processing the responses was tedious work. At the end, I changed the approach to a more text based list with a special sequence (`<br>`) to separate the entries. That was way better, since I did not have to rely on `ast.eval` to parse the JSON string.
+
+Also the prompt for the summary took some approaches. In the beginning I tried it with an example in the prompt, but the the response contained the example text in the response if the email content was very short.
+
+In the beginning I also had trouble with the maximum tokens in the API calls and responses. Luckily OpenAI introduced the `gpt-3.5-turbo-16k` with a context lenght of 16 000 tokens and reduced the prices for all models. That way I was able to choose the model based on the content token lenght. There is still some improvement on the error handling to be done, but overall I had a response quality of more than 95 %.
+
+After I got satisfying results in my queries, I decided to create a Streamlit app for playing around with different settings. Now I am able to run queries using different models and different collections in my databases. Next step will be the implementation of a playground to be able to compare different models, settings and introduce human feedback.  The project I am looking at is this [here](https://github.com/nat/openplayground) 
+
+### Outlook
+
+Next steps will be implementation of the playground. After that I will work on different Vectorstores and Retrievers.  
+Then the next challenge is the finetuning of open sourec LLM, like **tiuae falcon** models and the **Guanaco 7b**  
+Huggingface  
+[link to falcon](https://huggingface.co/tiiuae/falcon-7b)  
+[link to Guanaco](https://huggingface.co/JosephusCheung/Guanaco)
+
+I chose these, because the `falcon-7b` has a good performance and the `Guanaco 7b` is also trained on German data. I will try to finetune them locally, but till now I always hit an `OutOfMemory` error in `cuda`. Even wiht small batch sizes and `precision=bf16-mixed` with the [Adapter](https://arxiv.org/abs/2303.16199) and [LoRa](https://github.com/microsoft/LoRA) strategies implemented in Lightning.ai repository [here](https://github.com/Lightning-AI/lit-gpt/tree/main)
 
 
+### Conclusion
 
-
+First goal was to create a real world app that can be used. Second was the rising request in our organization to start looking into the emerging field of LLMs. My focus was more on Timeseries data before, since I develop business cases in the IoT sector. But the hype around ChatGPT also got me hooked because I see quite some potential for our organization and the speed of development in the last 6 months is amazing. It changed the way how I develop and code as well as my daily work: it is present all the time.  
+But this project proved again the importance of high quality data to achieve good results. All tutorials are based on existing datasets and as soon as you use your own, the problems appear. In the beginning I was looking at all the promising tools to use, but today I even know, that even popular frameworks like Langchain or LLamaIndex are not the silver bullet that solves all your problems. This is the biggest learning for me, since I am not the Data Scientist nor the developer, I have to decide which strategy to follow or which problem to solve with which tools or frameworks. Or where to get the information needed to decide. And even that I did most of the work after business hours or on weekends, it was fun and I learned a lot (and the feeling of being in the middle of a live/work changer is exiting). 
