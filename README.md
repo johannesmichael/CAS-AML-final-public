@@ -155,9 +155,7 @@ and click on the localhost URL provided to see the app.
 Select Outlook from the Menue
 ![Streamlit](assets/streamlit.png)
 
-![Streamlit](https://github.com/johannesmichael/CAS-AML-final-public/blob/d71cfb4515d6f97519942dc67ae4816ef928ca9b/assets/streamlit.png)
-
-![Streamlit](https://github.com/johannesmichael/CAS-AML-final-public/blob/d71cfb4515d6f97519942dc67ae4816ef928ca9b/assets/streamlit2.png)
+![Streamlit](assets/streamlit2.png)
 
 
 On the left side you can adjust the settings for
