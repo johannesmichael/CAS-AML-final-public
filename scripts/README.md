@@ -287,3 +287,10 @@ def query_chat(query_string, num_docs=3, max_tokens=2000, temperature=0.5, model
 7.`if execute:`: When 'Execute Query' button is clicked on UI , it runs `query_chat` method with provided inputs & displays output on screen along with source links if available.
    
 These functions work together by taking user input through Streamlit interface elements, processing these inputs via OpenAI API calls & displaying results back onto Streamlit app interface .
+
+To run:
+
+    cd Streamlit
+    streamlit run home.py
+
+    

@@ -158,6 +158,8 @@ Select Outlook from the Menue
 ![Streamlit](assets/streamlit2.png)
 
 
+
+
 On the left side you can adjust the settings for
 
 1. Model: Works best with gpt-3.5-turbo-16k because of the lenght of some emails
@@ -198,6 +200,40 @@ Copy of the `.env` file if present in .gitignore. Just rename it and adjust to y
 Configuration for use in debug mode in VS Code
 
     launch.json
+
+### Detailed description of the scripts
+
+README.md file in the scripts folder
+
+[Documentation here](scripts/README.md)
+
+
+
+
+
+
+
+## Demo
+
+A demo video will follow. Need to create some dummy data first....
+
+
+## Lessons Learned
+
+Data is the most important piece for a project like this!
+
+First, how to get the data. If you want to run it in a pipeline, it should not require manual work. That is why I chose to use the Microsoft Outlook API instead of a file based approach (which could use multiprocessing).
+
+After several attempts on different output from the API I opted for the MIME representation of the emails, since the structure is always the same (standardized) and there is a library in the standard python distribution: `email`
+
+Then it comes to data cleaning. One thing is to remove unwanted characters or extensive use of newlines. Also emails from iOS devices adds a lot of clutter. But emails are full of ads and unimportant information (like signatures) for the purpose of this application. To get rid of them the best way I found was to send the preprocessed content to OpenAIs gpt models and let it structure, clean and classify it.
+
+Classifying it is not necessary for the inital purpose, but I thought, I could use it later to finetune or train a model based on these. I actually startet that process by using the `lightning` and `fabric` library from [Lightning.ai](https://lightning.ai/). See also Github page [here](https://github.com/Lightning-AI/lit-gpt). But training it locally, even with 2 GPU Nvidia RTX 4090 requires a lot of optimizing and I did not succeed to this point. But will follow to explore that path in order to create own models.
+
+Second challenge was the use of document and vectorstore. I tried it with Redis Cloud, to have a DB in the cloud and not only locally. But with the first approach I reached the free tier limit pretty soon, so I decided to start with local ChromaDB and try out Redis and other solutions later, when all points are clear.  
+Most challenging was the integration in to the code. Even with the extensive integrations provided by `langchain` library, it was not that trivial, since the development is on the fast lane. So I got errors with my dataset (it worked on the first small part, but later with the whole it failed). So I set up the ingestion and embedding process myself using the chromadb library directly.
+
+Finding the right parameters for the preprocessing and embeddings showed a big impact on the results in the query. 
 
 
 
