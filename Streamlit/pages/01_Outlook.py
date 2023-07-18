@@ -43,13 +43,13 @@ st.subheader("Model: " + model + " through Chat API")
 st.markdown("This is a playground for the evaluation of a prototype. The OpenAI API is used to answer questions about my emails. The email content is stored in a database and is queried using the Chroma library. The Chroma library is used to retrieve the most relevant documents for a given query. The retrieved emails are then used to answer the question using the API. The answer is then displayed in the output area below. The answer is not stored in the database.")
 
 #add a slider for the temperature
-temperature = st.sidebar.slider('Temperature ("creativity of the model")', 0.0, 1.0, 0.1, 0.1)
+temperature = st.sidebar.slider('Temperature ("creativity of the model")', 0.0, 1.0, 0.0, 0.1)
 
 #add a slider for the max tokens
 if model == "gpt-4" or model == "gpt-3.5-turbo":
-    max_tokens = st.sidebar.slider('Max Tokens ("length of the answer")', 0, 3000, 3000, 500)
+    max_tokens = st.sidebar.slider('Max Tokens ("length of the answer")', 0, 3000, 1000, 100)
 if model == "gpt-3.5-turbo-16k":
-    max_tokens = st.sidebar.slider('Max Tokens ("length of the answer")', 0, 14000, 7000,  500)
+    max_tokens = st.sidebar.slider('Max Tokens ("length of the answer")', 0, 14000, 2000,  500)
 
 #add a slider for number of documents
 num_docs = st.sidebar.slider('Number of Documents ("number of documents to retrieve")', 0, 10, 3, 1)
