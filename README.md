@@ -29,6 +29,8 @@ The project is the final project of the **CAS for Advanced Machine Learning 2022
 - [Acknowledgements](#acknowledgements)
 - [Author](#author)
 
+ - [Documentation /scripts](https://github.com/johannesmichael/CAS-AML-final-public/tree/main/scripts#documentation)
+
 
 ## Goals
 
