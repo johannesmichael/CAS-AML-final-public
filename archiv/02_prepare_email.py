@@ -46,7 +46,7 @@ def load_data():
     # Create the TableServiceClient object which will be used to create a container client
     connect_str = OUTLOOK_CONTENT_CONNECTION_STRING
     table_service = TableServiceClient.from_connection_string(connect_str)
-    table_name = "outlookjohannes"
+    table_name = "xxx"
     table_client = table_service.get_table_client(table_name) 
     documents = []
     for entity in table_client.list_entities():
@@ -172,7 +172,7 @@ def upload_data(df):
         # Create the BlobServiceClient object which will be used
         blob_service_client = BlobServiceClient.from_connection_string(OUTLOOK_CONTENT_CONNECTION_STRING)
 
-        container_name = 'outlookcontent'
+        container_name = 'xxxx'
         
         # Create a blob client using the local file name as the name for the blob
         file_name = today + "synchron_outlook_data.parquet"
